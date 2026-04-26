@@ -12,7 +12,7 @@ Route::prefix('v1')->group(function () {
     Route::get('accounts/{account}/transactions', [TransactionController::class, 'forAccount']);
     Route::get('transactions/{transaction}', [TransactionController::class, 'show']);
 
-    Route::middleware(['throttle:5,1', RequireIdempotencyKey::class])->group(function () {
+    Route::middleware(['auth:sanctum', 'throttle:5,1', RequireIdempotencyKey::class])->group(function () {
         Route::post('accounts/{account}/withdraw', WithdrawController::class);
     });
 });
