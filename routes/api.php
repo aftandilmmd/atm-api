@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ReverseController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawController;
 use App\Http\Middleware\RequireIdempotencyKey;
@@ -14,5 +15,6 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth:sanctum', 'throttle:5,1', RequireIdempotencyKey::class])->group(function () {
         Route::post('accounts/{account}/withdraw', WithdrawController::class);
+        Route::post('transactions/{transaction}/reverse', ReverseController::class);
     });
 });
