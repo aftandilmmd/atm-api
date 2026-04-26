@@ -15,9 +15,17 @@ final class WithdrawAction
 {
     public function __construct(private BanknoteDispenser $dispenser) {}
 
-    public function execute(Account $account, int $amount, string $ip): Transaction
+    public function execute(Account $account, int $amount, ?string $idempotencyKey, string $ip): Transaction
     {
-        return DB::transaction(function () use ($account, $amount, $ip) {
+        if ($idempotencyKey !== null) {
+            $existing = $this->findByIdempotencyKey($idempotencyKey);
+
+            if ($existing !== null) {
+                return $existing;
+            }
+        }
+
+        $transaction = DB::transaction(function () use ($account, $amount, $idempotencyKey, $ip) {
             $account = Account::whereKey($account->id)->lockForUpdate()->firstOrFail();
 
             if ($account->balance < $amount) {
@@ -40,14 +48,14 @@ final class WithdrawAction
             $account->decrement('balance', $amount);
 
             $cases = collect($plan)
-                ->map(fn($count, $value) => "WHEN value = " . (int) $value . " THEN quantity - " . (int) $count)
+                ->map(fn ($count, $value) => 'WHEN value = '.(int) $value.' THEN quantity - '.(int) $count)
                 ->implode(' ');
 
             DB::update("
                 UPDATE denominations
                 SET quantity = CASE {$cases} ELSE quantity END
-                WHERE currency_id = ? AND value IN (" . implode(',', array_map('intval', array_keys($plan))) . ")
-            ", [$account->currency_id]);
+                WHERE currency_id = ? AND value IN (".implode(',', array_map('intval', array_keys($plan))).')
+            ', [$account->currency_id]);
 
             $transaction = Transaction::create([
                 'account_id'      => $account->id,
@@ -57,6 +65,7 @@ final class WithdrawAction
                 'balance_before'  => $balanceBefore,
                 'balance_after'   => $account->balance,
                 'dispensed_notes' => $plan,
+                'idempotency_key' => $idempotencyKey,
                 'ip_address'      => $ip,
             ]);
 
@@ -75,5 +84,32 @@ final class WithdrawAction
 
             return $transaction;
         }, attempts: 3);
+
+        if ($idempotencyKey !== null) {
+            $this->storeIdempotency($idempotencyKey, $transaction);
+        }
+
+        return $transaction;
+    }
+
+    private function findByIdempotencyKey(string $key): ?Transaction
+    {
+        $row = DB::table('idempotency_keys')
+            ->where('key', $key)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        return $row ? Transaction::find($row->transaction_id) : null;
+    }
+
+    private function storeIdempotency(string $key, Transaction $transaction): void
+    {
+        DB::table('idempotency_keys')->insertOrIgnore([
+            'key'            => $key,
+            'transaction_id' => $transaction->id,
+            'response'       => json_encode(['transaction_id' => $transaction->id]),
+            'expires_at'     => now()->addHours(24),
+            'created_at'     => now(),
+        ]);
     }
 }

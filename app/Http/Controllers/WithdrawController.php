@@ -14,6 +14,7 @@ class WithdrawController extends Controller
         $transaction = $action->execute(
             account: $account,
             amount:  $request->integer('amount'),
+            idempotencyKey: $request->header('Idempotency-Key'),
             ip:      $request->ip() ?? '0.0.0.0',
         );
 
