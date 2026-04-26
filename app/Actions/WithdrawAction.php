@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Exceptions\CannotDispenseException;
 use App\Exceptions\InsufficientBalanceException;
 use App\Models\Account;
+use App\Models\AuditLog;
 use App\Models\Denomination;
 use App\Models\Transaction;
 use App\Services\BanknoteDispenser;
@@ -48,7 +49,7 @@ final class WithdrawAction
                 WHERE currency_id = ? AND value IN (" . implode(',', array_map('intval', array_keys($plan))) . ")
             ", [$account->currency_id]);
 
-            return Transaction::create([
+            $transaction = Transaction::create([
                 'account_id'      => $account->id,
                 'type'            => 'withdrawal',
                 'status'          => 'success',
@@ -58,6 +59,21 @@ final class WithdrawAction
                 'dispensed_notes' => $plan,
                 'ip_address'      => $ip,
             ]);
+
+            AuditLog::create([
+                'user_id'     => auth()->id(),
+                'action'      => 'withdrawal',
+                'entity_type' => Transaction::class,
+                'entity_id'   => $transaction->id,
+                'changes'     => [
+                    'balance_before' => $balanceBefore,
+                    'balance_after'  => $account->balance,
+                    'dispensed'      => $plan,
+                ],
+                'ip_address'  => $ip,
+            ]);
+
+            return $transaction;
         }, attempts: 3);
     }
 }
