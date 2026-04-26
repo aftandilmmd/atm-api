@@ -12,6 +12,7 @@ class AccountSeeder extends Seeder
     public function run(): void
     {
         $azn = Currency::where('code', 'AZN')->firstOrFail();
+        $usd = Currency::where('code', 'USD')->firstOrFail();
         $customer = User::where('email', 'customer@atm.test')->first();
 
         Account::firstOrCreate(
@@ -22,6 +23,11 @@ class AccountSeeder extends Seeder
         Account::firstOrCreate(
             ['owner_name' => 'Test Customer 2'],
             ['currency_id' => $azn->id, 'balance' => 1000000],
+        );
+
+        Account::firstOrCreate(
+            ['owner_name' => 'Test Customer USD'],
+            ['currency_id' => $usd->id, 'user_id' => $customer?->id, 'balance' => 500000],
         );
     }
 }
