@@ -25,6 +25,8 @@ final class WithdrawAction
             }
         }
 
+        $started = microtime(true);
+
         $transaction = DB::transaction(function () use ($account, $amount, $idempotencyKey, $ip) {
             $account = Account::whereKey($account->id)->lockForUpdate()->firstOrFail();
 
@@ -84,6 +86,10 @@ final class WithdrawAction
 
             return $transaction;
         }, attempts: 3);
+
+        $duration = (int) ((microtime(true) - $started) * 1000);
+        Transaction::whereKey($transaction->id)->update(['duration_ms' => $duration]);
+        $transaction->duration_ms = $duration;
 
         if ($idempotencyKey !== null) {
             $this->storeIdempotency($idempotencyKey, $transaction);
