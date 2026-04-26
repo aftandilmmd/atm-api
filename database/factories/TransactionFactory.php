@@ -13,13 +13,13 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'account_id'     => Account::factory(),
-            'type'           => 'withdrawal',
-            'status'         => 'success',
-            'amount'         => 10000,
+            'account_id' => Account::factory(),
+            'type' => 'withdrawal',
+            'status' => 'success',
+            'amount' => 10000,
             'balance_before' => 50000,
-            'balance_after'  => 40000,
-            'created_at'     => now(),
+            'balance_after' => 40000,
+            'created_at' => now(),
         ];
     }
 }

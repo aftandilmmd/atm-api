@@ -15,7 +15,7 @@ class RequireIdempotencyKey
 
         if (! $key || ! Str::isUuid($key)) {
             return response()->json([
-                'error'   => 'IDEMPOTENCY_KEY_REQUIRED',
+                'error' => 'IDEMPOTENCY_KEY_REQUIRED',
                 'message' => __('Idempotency-Key başlığı (UUID) tələb olunur.'),
             ], 400);
         }

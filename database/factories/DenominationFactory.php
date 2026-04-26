@@ -14,8 +14,8 @@ class DenominationFactory extends Factory
     {
         return [
             'currency_id' => Currency::factory(),
-            'value'       => 10000,
-            'quantity'    => 100,
+            'value' => 10000,
+            'quantity' => 100,
         ];
     }
 }

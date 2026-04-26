@@ -22,7 +22,7 @@ final class ReverseTransactionAction
             ->exists();
 
         if ($alreadyReversed) {
-            throw new TransactionAlreadyReversedException();
+            throw new TransactionAlreadyReversedException;
         }
 
         return DB::transaction(function () use ($original, $ip) {
@@ -38,23 +38,23 @@ final class ReverseTransactionAction
             }
 
             $reversal = Transaction::create([
-                'account_id'             => $account->id,
-                'type'                   => 'reversal',
-                'status'                 => 'success',
-                'amount'                 => $original->amount,
-                'balance_before'         => $balanceBefore,
-                'balance_after'          => $account->balance,
+                'account_id' => $account->id,
+                'type' => 'reversal',
+                'status' => 'success',
+                'amount' => $original->amount,
+                'balance_before' => $balanceBefore,
+                'balance_after' => $account->balance,
                 'related_transaction_id' => $original->id,
-                'ip_address'             => $ip,
+                'ip_address' => $ip,
             ]);
 
             AuditLog::create([
-                'user_id'     => auth()->id(),
-                'action'      => 'reversal',
+                'user_id' => auth()->id(),
+                'action' => 'reversal',
                 'entity_type' => Transaction::class,
-                'entity_id'   => $reversal->id,
-                'changes'     => ['original_id' => $original->id, 'amount' => $original->amount],
-                'ip_address'  => $ip,
+                'entity_id' => $reversal->id,
+                'changes' => ['original_id' => $original->id, 'amount' => $original->amount],
+                'ip_address' => $ip,
             ]);
 
             return $reversal;

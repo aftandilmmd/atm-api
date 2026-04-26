@@ -31,7 +31,7 @@ final class WithdrawAction
             $account = Account::whereKey($account->id)->lockForUpdate()->firstOrFail();
 
             if ($account->balance < $amount) {
-                throw new InsufficientBalanceException();
+                throw new InsufficientBalanceException;
             }
 
             $denominations = Denomination::where('currency_id', $account->currency_id)
@@ -43,7 +43,7 @@ final class WithdrawAction
 
             $plan = $this->dispenser->dispense($inventory, $amount);
             if ($plan === null) {
-                throw new CannotDispenseException();
+                throw new CannotDispenseException;
             }
 
             $balanceBefore = $account->balance;
@@ -60,28 +60,28 @@ final class WithdrawAction
             ', [$account->currency_id]);
 
             $transaction = Transaction::create([
-                'account_id'      => $account->id,
-                'type'            => 'withdrawal',
-                'status'          => 'success',
-                'amount'          => $amount,
-                'balance_before'  => $balanceBefore,
-                'balance_after'   => $account->balance,
+                'account_id' => $account->id,
+                'type' => 'withdrawal',
+                'status' => 'success',
+                'amount' => $amount,
+                'balance_before' => $balanceBefore,
+                'balance_after' => $account->balance,
                 'dispensed_notes' => $plan,
                 'idempotency_key' => $idempotencyKey,
-                'ip_address'      => $ip,
+                'ip_address' => $ip,
             ]);
 
             AuditLog::create([
-                'user_id'     => auth()->id(),
-                'action'      => 'withdrawal',
+                'user_id' => auth()->id(),
+                'action' => 'withdrawal',
                 'entity_type' => Transaction::class,
-                'entity_id'   => $transaction->id,
-                'changes'     => [
+                'entity_id' => $transaction->id,
+                'changes' => [
                     'balance_before' => $balanceBefore,
-                    'balance_after'  => $account->balance,
-                    'dispensed'      => $plan,
+                    'balance_after' => $account->balance,
+                    'dispensed' => $plan,
                 ],
-                'ip_address'  => $ip,
+                'ip_address' => $ip,
             ]);
 
             return $transaction;
@@ -111,11 +111,11 @@ final class WithdrawAction
     private function storeIdempotency(string $key, Transaction $transaction): void
     {
         DB::table('idempotency_keys')->insertOrIgnore([
-            'key'            => $key,
+            'key' => $key,
             'transaction_id' => $transaction->id,
-            'response'       => json_encode(['transaction_id' => $transaction->id]),
-            'expires_at'     => now()->addHours(24),
-            'created_at'     => now(),
+            'response' => json_encode(['transaction_id' => $transaction->id]),
+            'expires_at' => now()->addHours(24),
+            'created_at' => now(),
         ]);
     }
 }

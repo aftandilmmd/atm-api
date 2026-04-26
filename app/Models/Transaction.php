@@ -22,7 +22,7 @@ class Transaction extends Model
     {
         return [
             'dispensed_notes' => 'array',
-            'created_at'      => 'datetime',
+            'created_at' => 'datetime',
         ];
     }
 

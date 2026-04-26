@@ -14,8 +14,8 @@ class AccountFactory extends Factory
     {
         return [
             'currency_id' => Currency::factory(),
-            'owner_name'  => fake()->name(),
-            'balance'     => 0,
+            'owner_name' => fake()->name(),
+            'balance' => 0,
         ];
     }
 
