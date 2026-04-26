@@ -44,6 +44,8 @@ final class BanknoteDispenser
             $remaining -= $d;
         }
 
+        krsort($result);
+
         return $result;
     }
 }
