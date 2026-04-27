@@ -12,8 +12,8 @@ class CurrencyFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => 'AZN',
-            'name' => 'Azerbaijani Manat',
+            'code' => strtoupper(fake()->unique()->lexify('???')),
+            'name' => fake()->words(2, true),
         ];
     }
 }
