@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['currency_id', 'value', 'quantity'])]
 class Denomination extends Model
 {
+    /**
+     * @return BelongsTo<Currency, $this>
+     */
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);

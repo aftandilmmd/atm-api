@@ -4,6 +4,10 @@ namespace App\Services;
 
 final class BanknoteDispenser
 {
+    /**
+     * @param  array<int, int>  $inventory
+     * @return array<int, int>|null
+     */
     public function dispense(array $inventory, int $amount): ?array
     {
         if ($amount <= 0) {

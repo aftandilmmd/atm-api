@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,8 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 #[WithoutTimestamps]
 class AuditLog extends Model
 {
+    /** @use HasFactory<Factory<AuditLog>> */
     use HasFactory;
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
