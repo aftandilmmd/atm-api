@@ -19,7 +19,7 @@ class TransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type->value,
-            'status' => $this->status,
+            'status' => $this->status->value,
             'amount' => $this->amount,
             'amount_formatted' => format_money($this->amount, $this->account->currency->code),
             'balance_before' => $this->balance_before,

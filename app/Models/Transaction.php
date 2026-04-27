@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $account_id
  * @property TransactionType $type
- * @property string $status
+ * @property TransactionStatus $status
  * @property int $amount
  * @property int $balance_before
  * @property int $balance_after
@@ -47,6 +48,7 @@ class Transaction extends Model
             'dispensed_notes' => 'array',
             'created_at' => 'datetime',
             'type' => TransactionType::class,
+            'status' => TransactionStatus::class,
         ];
     }
 

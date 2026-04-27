@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Exceptions\TransactionAlreadyReversedException;
 use App\Models\Account;
@@ -41,7 +42,7 @@ final class ReverseTransactionAction
             $reversal = Transaction::create([
                 'account_id' => $account->id,
                 'type' => TransactionType::REVERSE,
-                'status' => 'success',
+                'status' => TransactionStatus::SUCCESS,
                 'amount' => $original->amount,
                 'balance_before' => $balanceBefore,
                 'balance_after' => $account->balance,

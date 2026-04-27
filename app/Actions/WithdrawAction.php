@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Exceptions\CannotDispenseException;
 use App\Exceptions\InsufficientBalanceException;
@@ -63,7 +64,7 @@ final class WithdrawAction
             $transaction = Transaction::create([
                 'account_id' => $account->id,
                 'type' => TransactionType::WITHDRAW,
-                'status' => 'success',
+                'status' => TransactionStatus::SUCCESS,
                 'amount' => $amount,
                 'balance_before' => $balanceBefore,
                 'balance_after' => $account->balance,
