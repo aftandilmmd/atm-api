@@ -13,7 +13,10 @@ class AccountFactory extends Factory
     public function definition(): array
     {
         return [
-            'currency_id' => Currency::factory(),
+            'currency_id' => fn () => Currency::firstOrCreate(
+                ['code' => 'AZN'],
+                ['name' => 'Azerbaijani Manat']
+            )->id,
             'owner_name' => fake()->name(),
             'balance' => 0,
         ];
