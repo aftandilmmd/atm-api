@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TransactionType;
 use App\Models\Account;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,7 +15,7 @@ class TransactionFactory extends Factory
     {
         return [
             'account_id' => Account::factory(),
-            'type' => 'withdrawal',
+            'type' => TransactionType::WITHDRAW,
             'status' => 'success',
             'amount' => 10000,
             'balance_before' => 50000,

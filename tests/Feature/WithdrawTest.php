@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TransactionType;
 use App\Models\Account;
 use App\Models\AuditLog;
 use App\Models\Currency;
@@ -96,5 +97,5 @@ it('audit log yazır', function () {
         ->postJson("/api/v1/accounts/{$account->id}/withdraw", ['amount' => 10000])
         ->assertSuccessful();
 
-    expect(AuditLog::where('action', 'withdrawal')->exists())->toBeTrue();
+    expect(AuditLog::where('action', TransactionType::WITHDRAW->value)->exists())->toBeTrue();
 });

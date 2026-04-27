@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\TransactionType;
 use App\Models\Transaction;
 use App\Models\User;
 
@@ -13,7 +14,7 @@ class TransactionPolicy
             return false;
         }
 
-        if ($transaction->type !== 'withdrawal') {
+        if ($transaction->type !== TransactionType::WITHDRAW) {
             return false;
         }
 

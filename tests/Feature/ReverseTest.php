@@ -25,7 +25,7 @@ it('supervisor uğurla geri alır', function () {
     $this->withHeaders(['Idempotency-Key' => Str::uuid()->toString()])
         ->postJson("/api/v1/transactions/{$original->id}/reverse")
         ->assertCreated()
-        ->assertJsonPath('data.type', 'reversal');
+        ->assertJsonPath('data.type', 'reverse');
 
     expect($account->fresh()->balance)->toBe(25000);
 });

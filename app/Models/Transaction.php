@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionType;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $account_id
- * @property string $type
+ * @property TransactionType $type
  * @property string $status
  * @property int $amount
  * @property int $balance_before
@@ -45,6 +46,7 @@ class Transaction extends Model
         return [
             'dispensed_notes' => 'array',
             'created_at' => 'datetime',
+            'type' => TransactionType::class,
         ];
     }
 
@@ -62,7 +64,7 @@ class Transaction extends Model
      */
     public function scopeWithdrawals(Builder $q): Builder
     {
-        return $q->where('type', 'withdrawal');
+        return $q->where('type', TransactionType::WITHDRAW);
     }
 
     /**
@@ -71,6 +73,6 @@ class Transaction extends Model
      */
     public function scopeReversals(Builder $q): Builder
     {
-        return $q->where('type', 'reversal');
+        return $q->where('type', TransactionType::REVERSE);
     }
 }

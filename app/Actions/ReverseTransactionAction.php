@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\TransactionType;
 use App\Exceptions\TransactionAlreadyReversedException;
 use App\Models\Account;
 use App\Models\AuditLog;
@@ -13,12 +14,12 @@ final class ReverseTransactionAction
 {
     public function execute(Transaction $original, string $ip): Transaction
     {
-        if ($original->type !== 'withdrawal') {
+        if ($original->type !== TransactionType::WITHDRAW) {
             throw new TransactionAlreadyReversedException(__('Yalnız pul çıxarış əməliyyatları geri alına bilər.'));
         }
 
         $alreadyReversed = Transaction::where('related_transaction_id', $original->id)
-            ->where('type', 'reversal')
+            ->where('type', TransactionType::REVERSE)
             ->exists();
 
         if ($alreadyReversed) {
@@ -39,7 +40,7 @@ final class ReverseTransactionAction
 
             $reversal = Transaction::create([
                 'account_id' => $account->id,
-                'type' => 'reversal',
+                'type' => TransactionType::REVERSE,
                 'status' => 'success',
                 'amount' => $original->amount,
                 'balance_before' => $balanceBefore,
@@ -50,7 +51,7 @@ final class ReverseTransactionAction
 
             AuditLog::create([
                 'user_id' => auth()->id(),
-                'action' => 'reversal',
+                'action' => TransactionType::REVERSE->value,
                 'entity_type' => Transaction::class,
                 'entity_id' => $reversal->id,
                 'changes' => ['original_id' => $original->id, 'amount' => $original->amount],

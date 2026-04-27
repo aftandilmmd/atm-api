@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\TransactionType;
 use App\Exceptions\CannotDispenseException;
 use App\Exceptions\InsufficientBalanceException;
 use App\Models\Account;
@@ -61,7 +62,7 @@ final class WithdrawAction
 
             $transaction = Transaction::create([
                 'account_id' => $account->id,
-                'type' => 'withdrawal',
+                'type' => TransactionType::WITHDRAW,
                 'status' => 'success',
                 'amount' => $amount,
                 'balance_before' => $balanceBefore,
@@ -73,7 +74,7 @@ final class WithdrawAction
 
             AuditLog::create([
                 'user_id' => auth()->id(),
-                'action' => 'withdrawal',
+                'action' => TransactionType::WITHDRAW->value,
                 'entity_type' => Transaction::class,
                 'entity_id' => $transaction->id,
                 'changes' => [
