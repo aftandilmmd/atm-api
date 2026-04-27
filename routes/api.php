@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DenominationController;
 use App\Http\Controllers\ReverseController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawController;
@@ -12,9 +13,14 @@ Route::prefix('v1')->group(function () {
     Route::get('accounts/{account}', [AccountController::class, 'show']);
     Route::get('accounts/{account}/transactions', [TransactionController::class, 'forAccount']);
     Route::get('transactions/{transaction}', [TransactionController::class, 'show']);
+    Route::get('atm/denominations', [DenominationController::class, 'index']);
 
     Route::middleware(['auth:sanctum', 'throttle:5,1', RequireIdempotencyKey::class])->group(function () {
         Route::post('accounts/{account}/withdraw', WithdrawController::class);
         Route::post('transactions/{transaction}/reverse', ReverseController::class);
+    });
+
+    Route::middleware(['auth:sanctum', 'can:manage-atm'])->group(function () {
+        Route::put('atm/denominations/{denomination}', [DenominationController::class, 'update']);
     });
 });
