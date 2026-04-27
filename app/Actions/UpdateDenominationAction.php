@@ -16,12 +16,12 @@ final class UpdateDenominationAction
             $denomination->update(['quantity' => $quantity]);
 
             AuditLog::create([
-                'user_id'     => auth()->id(),
-                'action'      => 'denomination.updated',
+                'user_id' => auth()->id(),
+                'action' => 'denomination.updated',
                 'entity_type' => Denomination::class,
-                'entity_id'   => $denomination->id,
-                'changes'     => ['old' => $oldQuantity, 'new' => $quantity],
-                'ip_address'  => $ip,
+                'entity_id' => $denomination->id,
+                'changes' => ['old' => $oldQuantity, 'new' => $quantity],
+                'ip_address' => $ip,
             ]);
 
             return $denomination;

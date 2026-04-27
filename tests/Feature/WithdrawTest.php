@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Account;
+use App\Models\AuditLog;
 use App\Models\Currency;
-use App\Models\Denomination;
 use App\Models\Transaction;
 use App\Models\User;
 use Database\Seeders\CurrencySeeder;
@@ -96,5 +96,5 @@ it('audit log yazır', function () {
         ->postJson("/api/v1/accounts/{$account->id}/withdraw", ['amount' => 10000])
         ->assertSuccessful();
 
-    expect(\App\Models\AuditLog::where('action', 'withdrawal')->exists())->toBeTrue();
+    expect(AuditLog::where('action', 'withdrawal')->exists())->toBeTrue();
 });

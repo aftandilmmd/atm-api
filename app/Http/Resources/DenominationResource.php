@@ -10,9 +10,9 @@ class DenominationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'       => $this->id,
+            'id' => $this->id,
             'currency' => $this->currency?->code,
-            'value'    => $this->value,
+            'value' => $this->value,
             'quantity' => $this->quantity,
         ];
     }

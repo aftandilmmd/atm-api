@@ -18,6 +18,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Transaction::class, TransactionPolicy::class);
-        Gate::define('manage-atm', fn(User $user) => $user->isAdmin());
+        Gate::define('manage-atm', fn (User $user) => $user->isAdmin());
     }
 }
