@@ -14,6 +14,7 @@ class CurrencyFactory extends Factory
         return [
             'code' => strtoupper(fake()->unique()->lexify('???')),
             'name' => fake()->words(2, true),
+            'symbol' => fake()->randomElement(['$', '€', '£', '¥', '₼']),
         ];
     }
 }

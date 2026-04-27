@@ -9,7 +9,7 @@ class CurrencySeeder extends Seeder
 {
     public function run(): void
     {
-        Currency::firstOrCreate(['code' => 'AZN'], ['name' => 'Azerbaijani Manat']);
-        Currency::firstOrCreate(['code' => 'USD'], ['name' => 'US Dollar']);
+        Currency::firstOrCreate(['code' => 'AZN'], ['name' => 'Azerbaijani Manat', 'symbol' => '₼']);
+        Currency::firstOrCreate(['code' => 'USD'], ['name' => 'US Dollar', 'symbol' => '$']);
     }
 }

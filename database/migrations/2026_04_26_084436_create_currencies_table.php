@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->char('code', 3)->unique();
             $table->string('name', 100);
+            $table->string('symbol', 8)->nullable();
             $table->timestamps();
         });
     }
